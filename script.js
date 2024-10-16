@@ -1,3 +1,8 @@
+// Sound effects
+let hitPaddleSound = new Audio('assets/sounds/hit-paddle.mp3');
+let hitWallSound = new Audio('assets/sounds/hit-wall.mp3');
+let brickBreakSound = new Audio('assets/sounds/brick-break.mp3');
+
 let board;
 let boardWidth = 500;   // Width of the game board
 let boardHeight = 500;  // Height of the game board
@@ -47,10 +52,12 @@ let brickY = 45
 
 // Scoreboard
 let score = 0;
-
+// Level
+let level = 1
 // Game over
 let gameOver = false;
-
+// Pause the game
+let isPaused = false;
 
 
 // This function is called once the window loads
@@ -68,6 +75,11 @@ window.onload = () => {
     requestAnimationFrame(update);
     // Add event listener for player movement
     document.addEventListener('keydown', movePlayer);
+    document.addEventListener('keydown', (event) => {
+        if (event.code === "KeyP") {
+            isPaused = !isPaused;
+        }
+    });
 
     // Create bricks
     createBricks();
@@ -77,6 +89,14 @@ window.onload = () => {
 function update() {
     requestAnimationFrame(update);  // Continuously calls update function to create a game loop
 
+    // Draw pause message
+    if (isPaused) {
+        context.clearRect(0, 0, boardWidth, boardHeight);  // Clear canvas
+        context.fillStyle = "#ffffff";
+        context.font = "20px Arial";
+        context.fillText("Game Paused press 'P' to continue", 90, 200);
+        return;
+    }
     if (gameOver) { return }
     // Clear the canvas to redraw each frame
     context.clearRect(0, 0, boardWidth, boardHeight);
@@ -94,8 +114,10 @@ function update() {
     // Ball collision with the walls
     if (ball.y <= 0) {  // Ball hits the top wall
         ball.velocityY *= -1;  // Reverse the vertical direction
+        hitWallSound.play();  // Play sound on wall hit
     } else if (ball.x <= 0 || (ball.x + ball.width) >= boardWidth) {  // Ball hits left or right wall
         ball.velocityX *= -1;  // Reverse the horizontal direction
+        hitWallSound.play();  // Play sound on wall hit
     } else if (ball.y + ball.height >= boardHeight) {  // Ball hits the bottom
         // Game over
         context.font = "20px, sans-serif";
@@ -106,8 +128,10 @@ function update() {
     // Check for ball collision with player paddle
     if (checkTopCollision(ball, player) || checkBottomCollision(ball, player)) {
         ball.velocityY *= -1;  // Reverse vertical direction on collision
+        hitPaddleSound.play();  // Play sound on paddle hit
     } else if (checkLeftCollision(ball, player) || checkRightCollision(ball, player)) {
         ball.velocityX *= -1;  // Reverse horizontal direction on collision
+        hitPaddleSound.play();  // Play sound on paddle hit
     }
 
     // draw bricks
@@ -121,12 +145,14 @@ function update() {
                 ball.velocityY *= -1; // Reverse vertical direction on collision
                 brickCount--;
                 score += 100
+                brickBreakSound.play();  // Play sound when brick breaks
             }
             else if (checkLeftCollision(ball, brick) || checkRightCollision(ball, brick)) {
                 brick.break = true;
                 ball.velocityX *= -1; // Reverse horizontal direction on collision
                 brickCount--;
                 score += 100
+                brickBreakSound.play();  // Play sound when brick breaks
             }
             context.fillRect(brick.x, brick.y, brickWidth, brickHeight);
         }
@@ -134,15 +160,20 @@ function update() {
     // Next level
     if (brickCount == 0) {
         score += 100 * brickRows * brickColumns //bonus
+        level++;
+        // Increase ball speed and player velocity
+        ball.velocityX *= 1.1;  // Increase ball speed by 10%
+        ball.velocityY *= 1.1;
+        player.velocityX += 2;  // Increase player movement speed
         brickRows = Math.min(brickRows + 1, brickMaxRows)
         createBricks();
     }
 
-
-    // Display score
+    // Display score and level
     context.fillStyle = "#ffffff"
     context.font = "20px Arial"
     context.fillText("Score: " + score, 10, 20);
+    context.fillText("Level: " + level, 415, 20);
 }
 
 // Check if the player is out of the game board limits
