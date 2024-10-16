@@ -45,6 +45,13 @@ let brickCount = 0
 let brickX = 15;
 let brickY = 45
 
+// Scoreboard
+let score = 0;
+
+// Game over
+let gameOver = false;
+
+
 
 // This function is called once the window loads
 window.onload = () => {
@@ -70,6 +77,7 @@ window.onload = () => {
 function update() {
     requestAnimationFrame(update);  // Continuously calls update function to create a game loop
 
+    if (gameOver) { return }
     // Clear the canvas to redraw each frame
     context.clearRect(0, 0, boardWidth, boardHeight);
 
@@ -90,6 +98,9 @@ function update() {
         ball.velocityX *= -1;  // Reverse the horizontal direction
     } else if (ball.y + ball.height >= boardHeight) {  // Ball hits the bottom
         // Game over
+        context.font = "20px, sans-serif";
+        context.fillText("Game over, press 'SPACE' to restart", 80, 400);
+        gameOver = true;
     }
 
     // Check for ball collision with player paddle
@@ -103,20 +114,35 @@ function update() {
     context.fillStyle = "#31ce36"
     for (let i = 0; i < brickArray.length; i++) {
         let brick = brickArray[i];
+        // Check collisions
         if (!brick.break) {
             if (checkTopCollision(ball, brick) || checkBottomCollision(ball, brick)) {
                 brick.break = true;
                 ball.velocityY *= -1; // Reverse vertical direction on collision
                 brickCount--;
+                score += 100
             }
-            else if(checkLeftCollision(ball, brick) || checkRightCollision(ball, brick)){
+            else if (checkLeftCollision(ball, brick) || checkRightCollision(ball, brick)) {
                 brick.break = true;
                 ball.velocityX *= -1; // Reverse horizontal direction on collision
                 brickCount--;
+                score += 100
             }
             context.fillRect(brick.x, brick.y, brickWidth, brickHeight);
         }
     }
+    // Next level
+    if (brickCount == 0) {
+        score += 100 * brickRows * brickColumns //bonus
+        brickRows = Math.min(brickRows + 1, brickMaxRows)
+        createBricks();
+    }
+
+
+    // Display score
+    context.fillStyle = "#ffffff"
+    context.font = "20px Arial"
+    context.fillText("Score: " + score, 10, 20);
 }
 
 // Check if the player is out of the game board limits
@@ -126,6 +152,11 @@ function outOfLimit(xPosition) {
 
 // Move player based on key press (ArrowLeft or ArrowRight)
 function movePlayer(event) {
+    if (gameOver) {
+        if (event.code == "Space") {
+            resetGame();
+        }
+    }
     if (event.code == 'ArrowLeft') {  // Move left
         let nextPlayerX = player.x - player.velocityX;
         if (!outOfLimit(nextPlayerX)) {  // Check if movement is within limits
@@ -189,4 +220,28 @@ function createBricks() {
         }
     }
     brickCount = brickArray.length;
+}
+
+// Function to reset the game
+function resetGame() {
+    score = 0;
+    gameOver = false;
+    player = {
+        x: boardWidth / 2 - playerWidth / 2,  // Start position in the middle of the board
+        y: boardHeight - playerHeight - 5,    // Position near the bottom of the board
+        width: playerWidth,
+        height: playerHeight,
+        velocityX: playerVelocityX            // Movement speed in X direction
+    }
+    ball = {
+        x: boardWidth / 2,   // Start in the middle of the board
+        y: boardHeight / 2,
+        width: ballWidth,
+        height: ballHeight,
+        velocityX: ballVelocityX,   // Horizontal movement speed
+        velocityY: ballVelocityY    // Vertical movement speed
+    }
+    brickArray = [];
+    brickRows = 3
+    createBricks();
 }
