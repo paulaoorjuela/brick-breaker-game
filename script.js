@@ -26,6 +26,7 @@ let ballWidth = 10;
 let ballHeight = 10;
 let ballVelocityX = 3;   // Horizontal speed of the ball
 let ballVelocityY = 2;   // Vertical speed of the ball
+let ballRadius = 5;  // Radius of the ball (half of ballWidth)
 
 // Ball object with position, dimensions, and velocity
 let ball = {
@@ -33,6 +34,7 @@ let ball = {
     y: boardHeight / 2,
     width: ballWidth,
     height: ballHeight,
+    radius: ballRadius, 
     velocityX: ballVelocityX,   // Horizontal movement speed
     velocityY: ballVelocityY    // Vertical movement speed
 }
@@ -93,7 +95,7 @@ function update() {
     if (isPaused) {
         context.clearRect(0, 0, boardWidth, boardHeight);  // Clear canvas
         context.fillStyle = "#ffffff";
-        context.font = "20px Arial";
+        context.font = "10px 'PressStart2P'";
         context.fillText("Game Paused press 'P' to continue", 90, 200);
         return;
     }
@@ -109,7 +111,12 @@ function update() {
     context.fillStyle = "#ffffff";  // Color of the ball
     ball.x += ball.velocityX;
     ball.y += ball.velocityY;
-    context.fillRect(ball.x, ball.y, ball.width, ball.height);  // Draw the ball
+    // Draw the ball
+    context.beginPath();  // Start a new drawing path
+    context.arc(ball.x, ball.y, ball.width / 2, 0, Math.PI * 2);  // Draw a circle with radius equal to half the ball's width
+    context.fillStyle = "#ffffff";  // Set the color of the ball
+    context.fill();  // Fill the circle with the color
+    context.closePath();  // End the path
 
     // Ball collision with the walls
     if (ball.y <= 0) {  // Ball hits the top wall
@@ -120,7 +127,7 @@ function update() {
         hitWallSound.play();  // Play sound on wall hit
     } else if (ball.y + ball.height >= boardHeight) {  // Ball hits the bottom
         // Game over
-        context.font = "20px, sans-serif";
+        context.font = "10px 'PressStart2P'";
         context.fillText("Game over, press 'SPACE' to restart", 80, 400);
         gameOver = true;
     }
@@ -171,7 +178,7 @@ function update() {
 
     // Display score and level
     context.fillStyle = "#ffffff"
-    context.font = "20px Arial"
+    context.font = "10px 'PressStart2P'"
     context.fillText("Score: " + score, 10, 20);
     context.fillText("Level: " + level, 415, 20);
 }

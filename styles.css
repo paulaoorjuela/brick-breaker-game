@@ -1,12 +1,109 @@
+@font-face {
+    font-family: PressStart2P;
+    src: url(./assets/fonts/PressStart2P-Regular.ttf);
+}
+
+.green-text{
+    color: #31ce36;
+}
+
+.orange-text{
+    color: #e68122;
+}
+
+.ligthblue-text{
+    color: #22b1e6;
+}
+
+.darkblue-text{
+    color: #005eb2;
+}
+
+.white-text{
+    color: #ffffff;
+}
+
+.red-text{
+    color: #ff0000;
+}
+
+.darkgreen-text{
+    color: #006600;
+}
+
 body {
     text-align: center;
-    height: 98vh;
+    height: 93vh;
     background-color: black;
+}
+
+.title{
+    font-family: PressStart2P;
+    font-size: 45px;
+    margin: 45px auto 10px;
+}
+
+.main-section{
+    display: flex;
+    gap: 69px;
 }
 
 #board {
     background-color: #000;
-    border-top: 5px solid #22b1e6;
+    border-top: 5px solid #005eb2;
     border-right: 5px solid #22b1e6;
     border-left: 5px solid #22b1e6;
+}
+
+.side-wall-left{
+    width: 43px;
+    height: 506px;
+    position: absolute;
+    top: 99px;
+    left: 475px;
+}
+
+.side-wall-right{
+    width: 43px;
+    height: 506px;
+    position: absolute;
+    top: 99px;
+    right: 476px;
+}
+
+.intructions{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: PressStart2P;
+    font-size: 10px;
+    color: #ffffff;
+    padding: 0 0 0 16px;
+}
+
+.intructions > div{
+    display: flex;
+    margin-bottom: 35px;
+    align-items: center;
+}
+
+.keys-img{
+    width: 45px;
+}
+
+.fire-foor{
+    background-image: url(./assets/images/fire-floor.jpg);
+    height: 80px;
+    width: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-top: 102px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: PressStart2P;
+    font-size: 10px;
+    color: #380000;
 }
