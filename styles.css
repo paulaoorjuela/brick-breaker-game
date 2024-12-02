@@ -79,7 +79,7 @@ body {
     font-family: PressStart2P;
     font-size: 10px;
     color: #ffffff;
-    padding: 0 53px;
+    padding: 0 43px;
 }
 
 .intructions > div{
@@ -111,7 +111,7 @@ body {
 
 .fire-foor{
     background-image: url(./assets/images/fire-floor.jpg);
-    height: 80px;
+    height: 114px;
     width: 100%;
     background-position: center;
     background-repeat: no-repeat;
